@@ -1,0 +1,510 @@
+openapi: 3.1.0
+info:
+  title: Stock Trading API
+  version: 1.0.0
+  description: A simplified API-based Ruby on Rails application for stock trading.
+  contact:
+    name: Pablo Bello
+    email: pablobello@hey.com
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:3000/v1
+    description: Development server
+
+tags:
+  - name: Businesses
+    description: Operations related to businesses
+  - name: BuyOrders
+    description: Operations related to buy orders
+  - name: Authentication
+    description: User authentication endpoints
+
+paths:
+  /businesses:
+    get:
+      tags:
+        - Businesses
+      summary: List all businesses with available shares
+      description: Retrieve a list of all businesses that have available shares for sale.
+      operationId: listBusinesses
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: A list of businesses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Business'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /businesses/{businessId}:
+    get:
+      tags:
+        - Businesses
+      summary: Retrieve details of a specific business
+      description: Get detailed information about a specific business.
+      operationId: getBusiness
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A business object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /businesses/{businessId}/purchases:
+    get:
+      tags:
+        - Businesses
+      summary: View the historical purchases of a business
+      description: Buyers can view the historical purchases of a business, including quantity and price.
+      operationId: getBusinessPurchases
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of purchases.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Purchase'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /businesses/{businessId}/buy_orders:
+    post:
+      tags:
+        - BuyOrders
+      summary: Place a new buy order
+      description: Buyers place a new buy order for a specific business.
+      operationId: createBuyOrder
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBuyOrder'
+      responses:
+        '201':
+          description: Buy order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyOrder'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
+
+    get:
+      tags:
+        - BuyOrders
+      summary: List buy orders for a business
+      description: Owners can retrieve a list of buy orders for their business.
+      operationId: listBuyOrders
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of buy orders.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuyOrder'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /businesses/{businessId}/buy_orders/{buyOrderId}:
+    get:
+      tags:
+        - BuyOrders
+      summary: Retrieve details of a specific buy order
+      description: Get details of a specific buy order for a business.
+      operationId: getBuyOrder
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+        - name: buyOrderId
+          in: path
+          required: true
+          description: ID of the buy order
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A buy order object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyOrder'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    patch:
+      tags:
+        - BuyOrders
+      summary: Accept or reject a buy order
+      description: Owners accept or reject a buy order by updating its status.
+      operationId: updateBuyOrder
+      security:
+        - basicAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: ID of the business
+          schema:
+            type: integer
+        - name: buyOrderId
+          in: path
+          required: true
+          description: ID of the buy order
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBuyOrder'
+      responses:
+        '200':
+          description: Buy order updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyOrder'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
+
+  /users/sign_up:
+    post:
+      tags:
+        - Authentication
+      summary: User registration
+      description: Create a new user account.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
+
+  /users/sign_in:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate a user and return user details.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: User authenticated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /users/sign_out:
+    delete:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Logout the authenticated user.
+      operationId: logoutUser
+      security:
+        - basicAuth: []
+      responses:
+        '204':
+          description: User logged out successfully.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Authentication is required.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Forbidden - The user does not have permission to access the resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Not Found - The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequestError:
+      description: Bad Request - The request parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntityError:
+      description: Unprocessable Entity - Validation failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Business:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        total_shares:
+          type: integer
+        available_shares:
+          type: integer
+      required:
+        - id
+        - name
+        - total_shares
+        - available_shares
+
+    Purchase:
+      type: object
+      properties:
+        id:
+          type: integer
+        business_id:
+          type: integer
+        buyer_id:
+          type: integer
+        buyer_username:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+        purchased_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - business_id
+        - buyer_id
+        - buyer_username
+        - quantity
+        - price
+        - purchased_at
+
+    BuyOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+        business_id:
+          type: integer
+        buyer_id:
+          type: integer
+        buyer_username:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - business_id
+        - buyer_id
+        - buyer_username
+        - quantity
+        - price
+        - status
+        - created_at
+        - updated_at
+
+    NewBuyOrder:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+        price:
+          type: number
+          format: float
+          minimum: 0.01
+      required:
+        - quantity
+        - price
+
+    UpdateBuyOrder:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - accepted
+            - rejected
+      required:
+        - status
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - username
+        - email
+
+    NewUser:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - email
+        - password
+
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
