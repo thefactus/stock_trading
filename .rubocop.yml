@@ -1,0 +1,33 @@
+require:
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rake
+  - rubocop-rspec
+  - rubocop-rspec_rails
+
+AllCops:
+  Exclude:
+    - Rakefile
+    - bin/**/*
+    - config/**/*
+    - db/**/*
+    - vendor/**/*
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+Style/Documentation:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  Enabled: true
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  SafeAutoCorrect: true
+  Exclude:
+    - Gemfile
+    - config.ru
+Rails/I18nLocaleTexts:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
