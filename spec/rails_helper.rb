@@ -69,4 +69,17 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  path_to_openapi = Rails.root.join("docs/openapi.yml")
+  config.include Skooma::RSpec[path_to_openapi, path_prefix: "/api/v1"], type: :request
+
+  # Include FactoryBot methods
+  config.include(FactoryBot::Syntax::Methods)
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework(:rspec)
+    with.library(:rails)
+  end
 end
