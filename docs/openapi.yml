@@ -8,9 +8,9 @@ info:
     email: pablobello@hey.com
 
 servers:
-  - url: https://api.example.com/v1
+  - url: https://api.example.com/api/v1
     description: Production server
-  - url: http://localhost:3000/v1
+  - url: http://localhost:3000/api/v1
     description: Development server
 
 tags:
@@ -251,7 +251,7 @@ paths:
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
 
-  /users/sign_up:
+  /users:
     post:
       tags:
         - Authentication
@@ -270,49 +270,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
         '400':
           $ref: '#/components/responses/BadRequestError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
-
-  /users/sign_in:
-    post:
-      tags:
-        - Authentication
-      summary: User login
-      description: Authenticate a user and return user details.
-      operationId: loginUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginUser'
-      responses:
-        '200':
-          description: User authenticated successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /users/sign_out:
-    delete:
-      tags:
-        - Authentication
-      summary: User logout
-      description: Logout the authenticated user.
-      operationId: logoutUser
-      security:
-        - basicAuth: []
-      responses:
-        '204':
-          description: User logged out successfully.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   securitySchemes:
@@ -479,27 +446,22 @@ components:
     NewUser:
       type: object
       properties:
-        username:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-      required:
-        - username
-        - email
-        - password
-
-    LoginUser:
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-      required:
-        - email
-        - password
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+            password_confirmation:
+              type: string
+          required:
+            - username
+            - email
+            - password
+            - password_confirmation
 
     Error:
       type: object
