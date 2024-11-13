@@ -62,3 +62,4 @@ group :test do
 end
 
 gem "devise", "~> 4.9"
+gem "skooma", "~> 0.3.3"
