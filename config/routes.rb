@@ -15,6 +15,19 @@ Rails.application.routes.draw do
         controllers: {
           registrations: "api/v1/users/registrations"
         }
+
+      namespace :buyers do
+        resources :businesses, only: [:index] do
+          resources :buy_orders, only: [:create], controller: 'buy_orders'
+          resources :purchases, only: [:index], controller: 'purchases'
+        end
+      end
+
+      namespace :owners do
+        resources :businesses, only: [:index] do
+          resources :buy_orders, only: [:index, :update]
+        end
+      end
     end
   end
 
