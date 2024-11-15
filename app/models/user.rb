@@ -6,9 +6,16 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # Associations
+  has_many :businesses,
+           foreign_key: "owner_id",
+           class_name: "Business",
+           dependent: :destroy,
+           inverse_of: :owner
+
   # Enums
   enum :role, { buyer: "buyer", owner: "owner" }, validate: true
 
   # Validations
-  validates :username, presence: true
+  validates :username, presence: true, uniqueness: true
 end
