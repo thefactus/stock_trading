@@ -33,3 +33,7 @@ RSpec/MultipleExpectations:
   Enabled: false
 RSpecRails/InferredSpecType:
   Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
