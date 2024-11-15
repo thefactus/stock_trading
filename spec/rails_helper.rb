@@ -16,7 +16,7 @@ require "money-rails/test_helpers"
 
 Rails.root.glob("spec/support/**/*.rb").each { |f| require f }
 
-require 'simplecov'
+require "simplecov"
 SimpleCov.start
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
