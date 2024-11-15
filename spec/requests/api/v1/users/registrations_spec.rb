@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-describe "/users", type: :request do
-  describe "POST" do
+RSpec.describe "Api::V1::Users::Registrations", type: :request do
+  describe "POST /api/v1/users" do
     subject { post "/api/v1/users", params: body, as: :json }
 
     let(:body) do
