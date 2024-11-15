@@ -10,9 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_12_211850) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_15_165511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "businesses", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "total_shares"
+    t.integer "available_shares"
+    t.integer "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_businesses_on_owner_id"
+  end
+
+  create_table "buy_orders", force: :cascade do |t|
+    t.bigint "business_id", null: false
+    t.bigint "buyer_id", null: false
+    t.integer "quantity", null: false
+    t.integer "price_cents", default: 0, null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["business_id"], name: "index_buy_orders_on_business_id"
+    t.index ["buyer_id"], name: "index_buy_orders_on_buyer_id"
+  end
+
+  create_table "purchases", force: :cascade do |t|
+    t.bigint "buy_order_id", null: false
+    t.bigint "business_id", null: false
+    t.bigint "buyer_id", null: false
+    t.integer "quantity", null: false
+    t.integer "price_cents", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["business_id"], name: "index_purchases_on_business_id"
+    t.index ["buy_order_id"], name: "index_purchases_on_buy_order_id"
+    t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -28,4 +63,11 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_12_211850) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
+
+  add_foreign_key "businesses", "users", column: "owner_id"
+  add_foreign_key "buy_orders", "businesses"
+  add_foreign_key "buy_orders", "users", column: "buyer_id"
+  add_foreign_key "purchases", "businesses"
+  add_foreign_key "purchases", "buy_orders"
+  add_foreign_key "purchases", "users", column: "buyer_id"
 end
