@@ -59,7 +59,11 @@ end
 
 group :test do
   gem "shoulda-matchers", "~> 6.0"
+
+  gem 'simplecov', require: false
 end
 
 gem "devise", "~> 4.9"
+gem "pundit", "~> 2.4"
 gem "skooma", "~> 0.3.3"
+gem "money-rails", "~> 1.15"
