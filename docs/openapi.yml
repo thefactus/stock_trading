@@ -8,7 +8,7 @@ info:
     email: pablobello@hey.com
 
 servers:
-  - url: https://api.example.com/api/v1
+  - url: https://stocktradingapi-2b9b63ae350d.herokuapp.com/api/v1
     description: Production server
   - url: http://localhost:3000/api/v1
     description: Development server
