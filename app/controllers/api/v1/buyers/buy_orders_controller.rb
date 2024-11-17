@@ -9,14 +9,13 @@ module Api
         def create
           authorize BuyOrder
 
-          @buy_order = @business.buy_orders.new(buy_order_params)
-          @buy_order.buyer = current_user
-
-          if @buy_order.save
-            render_success
-          else
-            render_error
-          end
+          @buy_order = CreateBuyOrderService.call(@business, buy_order_params, current_user)
+          render_success
+        rescue CreateBuyOrderService::NotEnoughAvailableSharesError => e
+          render json: { error: e.message }, status: :unprocessable_entity
+        rescue ActiveRecord::RecordInvalid => e
+          @buy_order = e.record
+          render_error
         end
 
         private

@@ -109,5 +109,22 @@ RSpec.describe "Api::V1::Buyers::BuyOrders", type: :request do
         expect(response.parsed_body["error"]).to eq("You are not authorized to perform this action.")
       end
     end
+
+    context "when the business does not have enough available shares" do
+      let(:params) do
+        {
+          buy_order: {
+            quantity: 200,
+            price: 50.0
+          }
+        }
+      end
+
+      it "does not create a buy order and returns an error message" do
+        expect { create_buy_order }.not_to change(BuyOrder, :count)
+        expect(response).to conform_schema(422)
+        expect(response.parsed_body["error"]).to eq("Not enough available shares to fulfill this order.")
+      end
+    end
   end
 end
