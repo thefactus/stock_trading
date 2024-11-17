@@ -131,6 +131,27 @@ The Stock Trading API is organized into the following categories, each handling 
 - Add tests for each service. The services are currently tested through the controllers, but it would be better to have separate tests for each service. I didn't add them because it would take longer to finish the task.
 - Achieve 100% test coverage. The current test coverage is 97.93%.
 
+## Setup
+
+To run the Stock Trading API locally, follow these steps:
+
+Clone the repository
+
+Install dependencies:
+
+    bundle
+
+Set up the database:
+
+    rails db:setup
+
+Start the server:
+
+    rails s
+
+Access the API at `http://localhost:3000`
+It gives you the API documentation and you can test the API endpoints.
+
 ### Prerequisites
 
 Ruby version 3.3.6 is required
